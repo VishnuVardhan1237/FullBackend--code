@@ -14,7 +14,7 @@ namespace REPOS
         public BeneficiaryRepository(BankDbContext context) => _context = context;
 
         public async Task<IEnumerable<Beneficiary>> GetAllAsync() => await _context.Beneficiaries.ToListAsync();
-        public async Task<Beneficiary> GetByIdAsync(int id) => await _context.Beneficiaries.FindAsync(id);
+        public async Task<Beneficiary?> GetByIdAsync(int id) => await _context.Beneficiaries.FindAsync(id);
         public async Task AddAsync(Beneficiary beneficiary)
         {
             _context.Beneficiaries.Add(beneficiary);

@@ -13,5 +13,8 @@ namespace REPOS
         Task<IEnumerable<Transaction>> GetAllAsync();
         Task<Transaction> GetByIdAsync(int transactionId);
         Task AddAsync(Transaction transaction);
+
+        Task<IEnumerable<Transaction>> GetMiniStatementAsync(string accountNumber);
+        Task<IEnumerable<Transaction>> GetDetailedStatementAsync(string accountNumber, DateTime from, DateTime to);
     }
 }
