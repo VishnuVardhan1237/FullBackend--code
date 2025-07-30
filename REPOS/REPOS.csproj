@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BankingManagementSystem\DAL.csproj" />
+    <!-- <ProjectReference Include="..\BANKAPI\BANKAPI.csproj" /> -->
   </ItemGroup>
 
 </Project>

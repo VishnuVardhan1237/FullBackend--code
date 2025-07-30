@@ -1,7 +1,9 @@
 ﻿using BankAPI.Models;
+using DAL.Contexts;
 using DAL.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using REPOS;
 
 namespace BankAPI.Controllers
@@ -11,8 +13,12 @@ namespace BankAPI.Controllers
     public class TransactionsController : ControllerBase
     {
         private readonly ITransactionRepository _repo;
-        public TransactionsController(ITransactionRepository repo) => _repo = repo;
-
+        private readonly BankingDbContext _context;
+        public TransactionsController(ITransactionRepository repo, BankingDbContext context)
+        {
+            _repo = repo;
+            _context = context;
+        }
         [HttpGet] public async Task<IActionResult> GetAll() => Ok(await _repo.GetAllAsync());
         [HttpGet("{id}")] public async Task<IActionResult> Get(int id) => Ok(await _repo.GetByIdAsync(id));
         [HttpPost] public async Task<IActionResult> Post(Transaction transaction) { await _repo.AddAsync(transaction); return Ok(); }
@@ -59,6 +65,60 @@ namespace BankAPI.Controllers
                 Transactions = dto
             });
         }
+            [HttpPost("transfer")]
+ public async Task<IActionResult> Transfer([FromBody] MoneyTransfer request)
+ {
+     if (!ModelState.IsValid)
+         return BadRequest(ModelState);
+
+     var fromAccount = await _context.Accounts
+         .FirstOrDefaultAsync(a => a.AccountNumber == request.FromAccount);
+     var toAccount = await _context.Accounts
+         .FirstOrDefaultAsync(a => a.AccountNumber == request.ToAccount);
+
+     if (fromAccount == null || toAccount == null)
+         return NotFound("One or both accounts not found.");
+
+     if (fromAccount.Balance < request.Amount)
+         return BadRequest("Insufficient balance.");
+
+     // Update balances
+     fromAccount.Balance -= request.Amount;
+     toAccount.Balance += request.Amount;
+
+     // Create and store debit transaction
+     var debitTransaction = new Transaction
+     {
+         AccountNumber = request.FromAccount,
+         Type = "Debit",
+         Amount = request.Amount,
+         Date = DateTime.UtcNow
+     };
+
+     // Create and store credit transaction
+     var creditTransaction = new Transaction
+     {
+         AccountNumber = request.ToAccount,
+         Type = "Credit",
+         Amount = request.Amount,
+         Date = DateTime.UtcNow
+     };
+
+     _context.Transactions.Add(debitTransaction);
+     _context.Transactions.Add(creditTransaction);
+
+     // Save all changes
+     await _context.SaveChangesAsync();
+
+     return Ok(new
+     {
+         Status = "Success",
+         From = fromAccount.AccountNumber,
+         To = toAccount.AccountNumber,
+         Amount = request.Amount,
+         Date = DateTime.UtcNow
+     });
+ }
 
 
     }

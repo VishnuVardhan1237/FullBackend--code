@@ -5,9 +5,9 @@ namespace DAL.Models;
 
 public partial class Loan
 {
-    public int LoanId { get; set; }
+    public int LoanID { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int? CustomerID { get; set; }
 
     public decimal? Amount { get; set; }
 

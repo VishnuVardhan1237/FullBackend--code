@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using DAL.Contexts;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace REPOS
 {
     public class UserRepository : IUserRepository
     {
-        private readonly BankDbContext _context;
-        public UserRepository(BankDbContext context) => _context = context;
+        private readonly BankingDbContext _context;
+        public UserRepository(BankingDbContext context) => _context = context;
 
         public async Task<IEnumerable<User>> GetAllAsync() => await _context.Users.ToListAsync();
         public async Task<User?> GetByIdAsync(int id) => await _context.Users.FindAsync(id);

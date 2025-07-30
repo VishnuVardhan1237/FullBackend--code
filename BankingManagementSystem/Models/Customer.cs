@@ -5,9 +5,9 @@ namespace DAL.Models;
 
 public partial class Customer
 {
-    public int CustomerId { get; set; }
+    public int CustomerID { get; set; }
 
-    public int? UserId { get; set; }
+    public int? UserID { get; set; }
 
     public string? Name { get; set; }
 
@@ -16,6 +16,8 @@ public partial class Customer
     public string? Phone { get; set; }
 
     public string? Address { get; set; }
+
+    public string? Password { get; set; }
 
     public virtual ICollection<Account> Accounts { get; set; } = new List<Account>();
 

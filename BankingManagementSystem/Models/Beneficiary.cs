@@ -5,9 +5,9 @@ namespace DAL.Models;
 
 public partial class Beneficiary
 {
-    public int BeneficiaryId { get; set; }
+    public int BeneficiaryID { get; set; }
 
-    public int? CustomerId { get; set; }
+    public int? CustomerID { get; set; }
 
     public string? BeneficiaryAccountNumber { get; set; }
 

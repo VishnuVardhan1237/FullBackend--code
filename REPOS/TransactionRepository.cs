@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using DAL.Contexts;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace REPOS
 
     public class TransactionRepository : ITransactionRepository
     {
-        private readonly BankDbContext _context;
-        public TransactionRepository(BankDbContext context) => _context = context;
+        private readonly BankingDbContext _context;
+        public TransactionRepository(BankingDbContext context) => _context = context;
 
         public async Task<IEnumerable<Transaction>> GetAllAsync() => await _context.Transactions.ToListAsync();
         public async Task<Transaction> GetByIdAsync(int id) => await _context.Transactions.FindAsync(id);

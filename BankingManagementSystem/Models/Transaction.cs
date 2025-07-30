@@ -5,7 +5,7 @@ namespace DAL.Models;
 
 public partial class Transaction
 {
-    public int TransactionId { get; set; }
+    public int TransactionID { get; set; }
 
     public string? AccountNumber { get; set; }
 

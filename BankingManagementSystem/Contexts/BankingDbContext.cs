@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace DAL.Models;
+namespace DAL.Contexts;
 
-public partial class BankDbContext : DbContext
+public partial class BankingDbContext : DbContext
 {
-    public BankDbContext()
+    public BankingDbContext()
     {
     }
 
-    public BankDbContext(DbContextOptions<BankDbContext> options)
+    public BankingDbContext(DbContextOptions<BankingDbContext> options)
         : base(options)
     {
     }
@@ -33,105 +34,96 @@ public partial class BankDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=(localdb)\\MSSqlLocaldb;Database=BankDb;Integrated Security =true");
+        => optionsBuilder.UseSqlServer("Server=localhost;Database=Master;User Id=sa;Password=YourStrong@Pass123;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
         {
-            entity.HasKey(e => e.AccountNumber).HasName("PK__Accounts__BE2ACD6E200956A3");
+            entity.HasKey(e => e.AccountNumber).HasName("PK__Accounts__BE2ACD6E3E13C22D");
 
             entity.Property(e => e.AccountNumber).HasMaxLength(20);
             entity.Property(e => e.AccountType).HasMaxLength(20);
             entity.Property(e => e.Balance).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.IsLocked).HasDefaultValue(false);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Accounts)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Accounts__Custom__412EB0B6");
+                .HasForeignKey(d => d.CustomerID)
+                .HasConstraintName("FK__Accounts__Custom__30242045");
         });
 
         modelBuilder.Entity<Beneficiary>(entity =>
         {
-            entity.HasKey(e => e.BeneficiaryId).HasName("PK__Benefici__3FBA95D57125D210");
+            entity.HasKey(e => e.BeneficiaryID).HasName("PK__Benefici__3FBA95D53082828D");
 
-            entity.Property(e => e.BeneficiaryId).HasColumnName("BeneficiaryID");
             entity.Property(e => e.BeneficiaryAccountNumber).HasMaxLength(20);
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
 
             entity.HasOne(d => d.BeneficiaryAccountNumberNavigation).WithMany(p => p.Beneficiaries)
                 .HasForeignKey(d => d.BeneficiaryAccountNumber)
-                .HasConstraintName("FK__Beneficia__Benef__4CA06362");
+                .HasConstraintName("FK__Beneficia__Benef__3B95D2F1");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Beneficiaries)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Beneficia__Custo__4BAC3F29");
+                .HasForeignKey(d => d.CustomerID)
+                .HasConstraintName("FK__Beneficia__Custo__3AA1AEB8");
         });
 
         modelBuilder.Entity<Customer>(entity =>
         {
-            entity.HasKey(e => e.CustomerId).HasName("PK__Customer__A4AE64B801357B45");
+            entity.HasKey(e => e.CustomerID).HasName("PK__Customer__A4AE64B8CB5C7B1E");
 
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Address).HasMaxLength(255);
             entity.Property(e => e.Email).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
+            entity.Property(e => e.Password).HasMaxLength(100);
             entity.Property(e => e.Phone).HasMaxLength(20);
-            entity.Property(e => e.UserId).HasColumnName("UserID");
 
             entity.HasOne(d => d.User).WithMany(p => p.Customers)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Customers__UserI__38996AB5");
+                .HasForeignKey(d => d.UserID)
+                .HasConstraintName("FK__Customers__UserI__278EDA44");
         });
 
         modelBuilder.Entity<Employee>(entity =>
         {
-            entity.HasKey(e => e.EmployeeId).HasName("PK__Employee__7AD04FF15B5F759B");
+            entity.HasKey(e => e.EmployeeID).HasName("PK__Employee__7AD04FF145AD758E");
 
-            entity.Property(e => e.EmployeeId).HasColumnName("EmployeeID");
             entity.Property(e => e.Designation).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.Password).HasMaxLength(100);
 
             entity.HasOne(d => d.User).WithMany(p => p.Employees)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Employees__UserI__3B75D760");
+                .HasForeignKey(d => d.UserID)
+                .HasConstraintName("FK__Employees__UserI__2A6B46EF");
         });
 
         modelBuilder.Entity<Loan>(entity =>
         {
-            entity.HasKey(e => e.LoanId).HasName("PK__Loans__4F5AD43740CC18E0");
+            entity.HasKey(e => e.LoanID).HasName("PK__Loans__4F5AD43795C2F561");
 
-            entity.Property(e => e.LoanId).HasColumnName("LoanID");
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.Status).HasMaxLength(20);
 
             entity.HasOne(d => d.Customer).WithMany(p => p.Loans)
-                .HasForeignKey(d => d.CustomerId)
-                .HasConstraintName("FK__Loans__CustomerI__48CFD27E");
+                .HasForeignKey(d => d.CustomerID)
+                .HasConstraintName("FK__Loans__CustomerI__37C5420D");
         });
 
         modelBuilder.Entity<Manager>(entity =>
         {
-            entity.HasKey(e => e.ManagerId).HasName("PK__Managers__3BA2AA818603C4EA");
+            entity.HasKey(e => e.ManagerID).HasName("PK__Managers__3BA2AA812755E40C");
 
-            entity.Property(e => e.ManagerId).HasColumnName("ManagerID");
             entity.Property(e => e.Department).HasMaxLength(100);
             entity.Property(e => e.Name).HasMaxLength(100);
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.Password).HasMaxLength(100);
 
             entity.HasOne(d => d.User).WithMany(p => p.Managers)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK__Managers__UserID__3E52440B");
+                .HasForeignKey(d => d.UserID)
+                .HasConstraintName("FK__Managers__UserID__2D47B39A");
         });
 
         modelBuilder.Entity<Transaction>(entity =>
         {
-            entity.HasKey(e => e.TransactionId).HasName("PK__Transact__55433A4B69DE5843");
+            entity.HasKey(e => e.TransactionID).HasName("PK__Transact__55433A4B4C88FBD5");
 
-            entity.Property(e => e.TransactionId).HasColumnName("TransactionID");
             entity.Property(e => e.AccountNumber).HasMaxLength(20);
             entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.Date)
@@ -141,14 +133,13 @@ public partial class BankDbContext : DbContext
 
             entity.HasOne(d => d.AccountNumberNavigation).WithMany(p => p.Transactions)
                 .HasForeignKey(d => d.AccountNumber)
-                .HasConstraintName("FK__Transacti__Accou__44FF419A");
+                .HasConstraintName("FK__Transacti__Accou__33F4B129");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.UserId).HasName("PK__Users__1788CCACE1895E6F");
+            entity.HasKey(e => e.UserID).HasName("PK__Users__1788CCAC0D00B60B");
 
-            entity.Property(e => e.UserId).HasColumnName("UserID");
             entity.Property(e => e.PasswordHash).HasMaxLength(255);
             entity.Property(e => e.Role).HasMaxLength(20);
             entity.Property(e => e.Username).HasMaxLength(50);

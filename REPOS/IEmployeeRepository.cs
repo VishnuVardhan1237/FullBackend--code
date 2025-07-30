@@ -15,5 +15,9 @@ namespace REPOS
         Task AddAsync(Employee employee);
         Task UpdateAsync(Employee employee);
         Task DeleteAsync(int id);
+
+        // ICustomerRepository.cs
+        Task<Employee?> GetByCredentialsAsync(string email, string password);
+
     }
 }

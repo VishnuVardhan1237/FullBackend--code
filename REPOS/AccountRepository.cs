@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using DAL.Contexts;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace REPOS
 
     public class AccountRepository : IAccountRepository
     {
-        private readonly BankDbContext _context;
-        public AccountRepository(BankDbContext context) => _context = context;
+        private readonly BankingDbContext _context;
+        public AccountRepository(BankingDbContext context) => _context = context;
 
         public async Task<IEnumerable<Account>> GetAllAsync() => await _context.Accounts.ToListAsync();
         public async Task<Account?> GetByIdAsync(string accNo) => await _context.Accounts.FindAsync(accNo);

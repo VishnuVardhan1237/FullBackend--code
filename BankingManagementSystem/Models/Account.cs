@@ -7,7 +7,7 @@ public partial class Account
 {
     public string AccountNumber { get; set; } = null!;
 
-    public int? CustomerId { get; set; }
+    public int? CustomerID { get; set; }
 
     public string? AccountType { get; set; }
 

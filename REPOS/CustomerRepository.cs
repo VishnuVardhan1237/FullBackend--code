@@ -1,4 +1,5 @@
-﻿using DAL.Models;
+﻿using DAL.Contexts;
+using DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,8 @@ namespace REPOS
 {
     public class CustomerRepository : ICustomerRepository
     {
-        private readonly BankDbContext _context;
-        public CustomerRepository(BankDbContext context) => _context = context;
+        private readonly BankingDbContext _context;
+        public CustomerRepository(BankingDbContext context) => _context = context;
 
         public async Task<IEnumerable<Customer>> GetAllAsync() => await _context.Customers.ToListAsync();
         public async Task<Customer?> GetByIdAsync(int id) => await _context.Customers.FindAsync(id);
@@ -22,5 +23,13 @@ namespace REPOS
             var customer = await _context.Customers.FindAsync(id);
             if (customer != null) { _context.Customers.Remove(customer); await _context.SaveChangesAsync(); }
         }
+
+        // CustomerRepository.cs
+public async Task<Customer?> GetByCredentialsAsync(string name, string password)
+{
+    return await _context.Customers.FirstOrDefaultAsync(
+        c => c.Name == name && c.Password == password);
+}
+
     }
 }
