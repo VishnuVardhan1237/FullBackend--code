@@ -14,5 +14,12 @@ namespace REPOS
         Task AddAsync(Account account);
         Task UpdateAsync(Account account);
         Task DeleteAsync(string accountNumber);
+
+     Task<Customer> FindCustomerAsync(string email, string customerId, string mobile);
+
+
+
+        Task DepositAsync(string accountNumber, decimal amount);
+    Task WithdrawAsync(string accountNumber, decimal amount);
     }
 }
